@@ -14,9 +14,10 @@ Prefix: Ctrl + B
 * Prefix + c -> creates a new window
 * Prefix + n -> opens next window
 * Prefix + p -> opens previous window
-* Prefix + s -> shows number of windows
+* Prefix + w -> shows number of windows
 * Prefix + number -> opens nth number window
-* Prefix + , -> reanmes the current window
+* Prefix + , -> reanmes current window
+* Prefix + $ -> renames current session
 * Prefix + & -> deleting a window
 
 ## Session
