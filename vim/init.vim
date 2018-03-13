@@ -4,7 +4,7 @@
 call plug#begin('~/.config/nvim/bundle')
 
 " File tree explorer
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 
 " Ctrl-P: Fuzzy file search
 Plug 'kien/ctrlp.vim'
@@ -19,13 +19,22 @@ Plug 'zchee/deoplete-jedi'
 Plug 'zchee/deoplete-clang'
 
 " Java auto-complete
-Plug 'artur-shaik/vim-javacomplete2'
+Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
 
 " Light and configurable statusline and tabline
 Plug 'itchyny/lightline.vim'
 
 " Git branch in lightline
 Plug 'itchyny/vim-gitbranch'
+
+" Asynchronous lint engine
+Plug 'w0rp/ale'
+
+" Code folding
+Plug 'pseewald/vim-anyfold'
+
+" Gruvbox theme
+Plug 'morhetz/gruvbox'
 
 " Initialize plugin system
 call plug#end()
@@ -38,6 +47,7 @@ let g:deoplete#enable_at_startup = 1
 " Python auto-complete
 let g:python3_host_prog = '/usr/bin/python3'
 let g:python_host_prog = '/usr/bin/python2.7'
+let g:deoplete#sources#jedi#show_docstring = 1
 
 " Clang auto-complete
 let g:deoplete#sources#clang#libclang_path = '/usr/lib64/libclang.so'
@@ -50,6 +60,7 @@ autocmd FileType java setlocal omnifunc=javacomplete#Complete
 
 " Lightline showing git branch name
 let g:lightline = {
+      \ 'colorscheme': 'gruvbox',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
@@ -58,6 +69,43 @@ let g:lightline = {
       \   'gitbranch': 'gitbranch#name'
       \ },
       \ }
+
+"================================================
+
+" ALE : Asynchronous Lint Engine
+
+" Lint only after saving file
+" let g:ale_lint_on_text_changed = 'never'
+
+" Don't lint when the file is opened
+" let g:ale_lint_on_enter = 0
+
+" Display message format
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+
+" Navigating through errors
+nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+nmap <silent> <C-j> <Plug>(ale_next_wrap)
+
+"================================================
+
+" Anyfold : Folding settings
+let anyfold_activate = 1
+set foldlevel=10
+set foldnestmax=10
+
+"================================================
+
+" Gruvbox theme
+
+" Truecolors
+set termguicolors
+
+let g:gruvbox_italic = 1
+set background=dark
+colorscheme gruvbox
 
 "================================================
 
@@ -78,3 +126,8 @@ set incsearch
 " Shows matching commands in command mode when TAB is pressed
 set wildmenu
 
+" VIM modes are only shown in lightline
+set noshowmode
+
+" Disable modeline
+set nomodeline
