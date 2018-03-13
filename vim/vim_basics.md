@@ -1,7 +1,7 @@
-* ^e -> scroll the window down
-* ^y -> scroll the window up
-* ^f -> scroll down one page
-* ^b -> scroll up one page
+* \^e -> scroll the window down
+* \^y -> scroll the window up
+* \^d -> scroll down one page
+* \^b -> scroll up one page
 * H -> move cursor to the top of window
 * M -> move cursor to the middle of window
 * L -> move cursor to the bottom of window
