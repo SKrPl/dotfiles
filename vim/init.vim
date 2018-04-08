@@ -21,12 +21,6 @@ Plug 'zchee/deoplete-clang'
 " Java auto-complete
 Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
 
-" Light and configurable statusline and tabline
-Plug 'itchyny/lightline.vim'
-
-" Git branch in lightline
-Plug 'itchyny/vim-gitbranch'
-
 " Asynchronous lint engine
 Plug 'w0rp/ale'
 
@@ -36,8 +30,21 @@ Plug 'pseewald/vim-anyfold'
 " Gruvbox theme
 Plug 'morhetz/gruvbox'
 
+" Light and configurable statusline and tabline
+Plug 'itchyny/lightline.vim'
+" Git branch in lightline
+Plug 'itchyny/vim-gitbranch'
+" ALE errors, warnings in lightline
+" Plug 'maximbaz/lightline-ale'
+
 " Initialize plugin system
 call plug#end()
+
+"================================================
+
+" Ctrl-P
+" Ignore custom files
+let g:ctrlp_custom_ignore = 'git'
 
 "================================================
 
@@ -55,20 +62,6 @@ let g:deoplete#sources#clang#clang_header = '/usr/lib64/clang/5.0.1/'
 
 " Java auto-complete
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
-
-"================================================
-
-" Lightline showing git branch name
-let g:lightline = {
-      \ 'colorscheme': 'gruvbox',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
-      \ },
-      \ 'component_function': {
-      \   'gitbranch': 'gitbranch#name'
-      \ },
-      \ }
 
 "================================================
 
@@ -109,9 +102,22 @@ colorscheme gruvbox
 
 "================================================
 
-" Syntax highlighting
-syntax on
+" Lightline showing git branch name
+let g:lightline = {
+      \ 'colorscheme': 'gruvbox',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ],
+      \   'right': [ [ 'lineinfo' ],
+      \             [ 'percent' ],
+      \             [ 'fileformat', 'fileencoding', 'filetype'] ],
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'gitbranch#name'
+      \ },
+      \ }
 
+"================================================
 filetype plugin indent on
 
 " Line number
@@ -131,3 +137,17 @@ set noshowmode
 
 " Disable modeline
 set nomodeline
+
+" auto reloading of file as soon as it changes in disk
+set autoread
+
+" Enable local configuration
+set exrc
+set secure
+
+" Generate tags file for ctags
+map <F5> :!ctags -R $pwd<CR><CR>
+
+" Indentation for html, css and js
+autocmd FileType html,css,js setlocal tabstop=2 expandtab shiftwidth=2 softtabstop=2
+

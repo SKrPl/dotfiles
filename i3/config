@@ -43,10 +43,12 @@ bindsym $mod+Shift+q kill
 bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
 
 # using rofi for program launcher
-# bindsym $mod+d exec rofi -show drun -theme ~/.config/i3/rofi_android.rasi 
+# bindsym $mod+d exec rofi -show drun -lines 3 -eh 2 -width 50 -padding 100 
 
-# for i3-gaps to work disable window titlebars
-for_window [class="^.*"] border pixel 0
+# Disabling Title bars 
+for_window [class="^.*"] border pixel 0 
+
+for_window [window_role="pop-up"] floating enable
 
 # static gaps
 gaps inner 10
@@ -104,8 +106,9 @@ bindsym $mod+a focus parent
 
 # workspace names
 set $workspace1 "1: Terminals "
-set $workspace2 "2: Python "
+set $workspace2 "2: Code "
 set $workspace3 "3: Firefox "
+set $workspace8 "8: Chat  "
 set $workspace9 "9: Files "
 set $workspace0 "10: VLC "
 
@@ -117,7 +120,7 @@ bindsym $mod+4 workspace 4
 bindsym $mod+5 workspace 5
 bindsym $mod+6 workspace 6
 bindsym $mod+7 workspace 7
-bindsym $mod+8 workspace 8
+bindsym $mod+8 workspace $workspace8
 bindsym $mod+9 workspace $workspace9
 bindsym $mod+0 workspace $workspace0
 
@@ -129,7 +132,7 @@ bindsym $mod+Shift+4 move container to workspace 4
 bindsym $mod+Shift+5 move container to workspace 5
 bindsym $mod+Shift+6 move container to workspace 6
 bindsym $mod+Shift+7 move container to workspace 7
-bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Shift+8 move container to workspace $workspace8
 bindsym $mod+Shift+9 move container to workspace $workspace9
 bindsym $mod+Shift+0 move container to workspace $workspace0
 
@@ -172,6 +175,8 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 # Some global variables for colors
+
+# arc theme dark
 set $bg-color			#2F343F
 set $inactive-bg-color		#2F343F
 set $text-color			#F3F4F5
@@ -179,32 +184,57 @@ set $inactive-text-color	#676E7D
 set $urgent-bg-color		#E53935
 set $separator-color		#757575
 
+# gruvbox theme
+set $color_normal_white		#A89984
+set $color_bright_white		#EBDBB2
+set $color_normal_gray		#222222
+set $color_bright_gray		#3C3836
+set $color_bright_yellow	#D79921
+set $color_normal_black		#282828
+set $color_unused		#FF0000
+
 # window colors
+
 #			border			background		text			indicator
-client.focused		$bg-color		$bg-color		$text-color		#00FF00
-client.unfocused	$inactive-bg-color	$inactive-bg-color	$inactive-text-color	#00FF00
-client.urgent		$urgent-bg-color	$urgent-bg-color	$text-color		#00FF00	
+# client.focused	$bg-color		$bg-color		$text-color		#00FF00
+# client.unfocused	$inactive-bg-color	$inactive-bg-color	$inactive-text-color	#00FF00
+# client.urgent		$urgent-bg-color	$urgent-bg-color	$text-color		#00FF00	
+
+
+# Colors		border			background		text			indicator	child_border
+client.focused		$color_bright_gray	$color_bright_gray	$color_bright_white	$color_unused	$color_normal_white
+client.focused_inactive	$color_bright_gray	$color_bright_gray	$color_bright_white	$color_unused	$color_normal_black
+client.unfocused	$color_normal_gray	$color_normal_gray	$color_normal_white	$color_unused	$color_normal_black
+client.urgent		$color_bright_yellow	$color_bright_yellow	$color_normal_black	$color_unused	$color_unused
+client.placeholder	$color_unused		$color_normal_black	$color_unused		$color_unused	$color_unused
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
         status_command i3blocks -c ~/.config/i3/i3blocks.conf
 	colors {
-		background	$bg-color
-		separator	$separator-color
+		# background	$bg-color
+		# separator	$separator-color
+		background	$color_normal_gray
+		separator	$color_bright_gray
+		statusline	$color_bright_white
 		#			border			background		text
 		# focused_workspace	$bg-color		$bg-color		$text-color
 		# inactive_workspace	$inactive-bg-color	$inactive-bg-color	$inactive-text-color
 		# urgent_workspace	$urgent-bg-color	$urgent-bg-color	$text-color
-		focused_workspace	"#FFFFFF"		$bg-color		$text-color
-		inactive_workspace	"#FFFFFF"		$inactive-bg-color	$inactive-text-color
-		urgent_workspace	"#FFFFFF"		$urgent-bg-color	$text-color
+		# focused_workspace	"#FFFFFF"		$bg-color		$text-color
+		# inactive_workspace	"#FFFFFF"		$inactive-bg-color	$inactive-text-color
+		# urgent_workspace	"#FFFFFF"		$urgent-bg-color	$text-color
+		focused_workspace	$color_bright_gray	$color_bright_gray	$color_bright_white
+		active_workspace	$color_unused		$color_unused		$color_unused
+		inactive_workspace	$color_normal_gray	$color_normal_gray	$color_bright_white
+		urgent_workspace	$color_bright_yellow	$color_bright_yellow	$color_normal_black
 	}
 }
 
 # Manual key bindings
 
-bindsym $mod+shift+x exec i3lock
+bindsym $mod+shift+x exec ~/.config/i3/lock.sh
 
 # Set wallpaper using feh
 exec_always --no-startup-id feh --bg-fill ~/.config/i3/Wallpapers/3.png
@@ -221,8 +251,8 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #d
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
 
 # brightness 
-bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
-bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightness
+bindsym XF86MonBrightnessUp exec xbacklight -inc 5 # increase screen brightness
+bindsym XF86MonBrightnessDown exec xbacklight -dec 5 # decrease screen brightness
 
 # compton
-exec --no-startup-id compton -f
+exec --no-startup-id compton --config ~/.config/i3/compton.conf
