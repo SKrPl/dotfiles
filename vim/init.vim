@@ -6,8 +6,11 @@ call plug#begin('~/.config/nvim/bundle')
 " File tree explorer
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 
-" Ctrl-P: Fuzzy file search
-Plug 'kien/ctrlp.vim'
+" fzf: Fuzzy file search
+Plug 'junegunn/fzf.vim'
+
+" File structure: functions, methods, classes
+Plug 'majutsushi/tagbar'
 
 " Asynchronous completion framework
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -21,11 +24,25 @@ Plug 'zchee/deoplete-clang'
 " Java auto-complete
 Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
 
+" JavaScript autocomplete
+Plug 'carlitux/deoplete-ternjs' 
+
 " Asynchronous lint engine
 Plug 'w0rp/ale'
 
-" Code folding
-Plug 'pseewald/vim-anyfold'
+" Markdown preview
+" Function required to build the plugin
+function! BuildComposer(info)
+  if a:info.status != 'unchanged' || a:info.force
+    if has('nvim')
+      !cargo build --release
+    else
+      !cargo build --release --no-default-features --features json-rpc
+    endif
+  endif
+endfunction
+" end of function
+Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
 
 " Gruvbox theme
 Plug 'morhetz/gruvbox'
@@ -42,9 +59,21 @@ call plug#end()
 
 "================================================
 
-" Ctrl-P
-" Ignore custom files
-let g:ctrlp_custom_ignore = 'git'
+" fzf 
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
 
 "================================================
 
@@ -53,15 +82,18 @@ let g:deoplete#enable_at_startup = 1
 
 " Python auto-complete
 let g:python3_host_prog = '/usr/bin/python3'
-let g:python_host_prog = '/usr/bin/python2.7'
+let g:python_host_prog = '/usr/bin/python2'
 let g:deoplete#sources#jedi#show_docstring = 1
 
 " Clang auto-complete
 let g:deoplete#sources#clang#libclang_path = '/usr/lib64/libclang.so'
-let g:deoplete#sources#clang#clang_header = '/usr/lib64/clang/5.0.1/'
+let g:deoplete#sources#clang#clang_header = '/usr/lib64/clang/6.0.0/'
 
 " Java auto-complete
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
+
+" JavaScript auto complete
+let g:deoplete#sources#ternjs#docs = 1
 
 "================================================
 
@@ -84,10 +116,8 @@ nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
 "================================================
 
-" Anyfold : Folding settings
-let anyfold_activate = 1
-set foldlevel=10
-set foldnestmax=10
+" Markdown composer
+let g:markdown_composer_browser = 'firefox'
 
 "================================================
 
@@ -118,10 +148,14 @@ let g:lightline = {
       \ }
 
 "================================================
+
 filetype plugin indent on
 
 " Line number
 set number
+
+" Automatically wrap lines
+set wrap
 
 " Matching brackets
 set showmatch
@@ -138,6 +172,9 @@ set noshowmode
 " Disable modeline
 set nomodeline
 
+" Highlights current row
+set cursorline
+
 " auto reloading of file as soon as it changes in disk
 set autoread
 
@@ -149,5 +186,5 @@ set secure
 map <F5> :!ctags -R $pwd<CR><CR>
 
 " Indentation for html, css and js
-autocmd FileType html,css,js setlocal tabstop=2 expandtab shiftwidth=2 softtabstop=2
+autocmd FileType html,css,javascript setlocal tabstop=2 expandtab shiftwidth=2 softtabstop=2
 
