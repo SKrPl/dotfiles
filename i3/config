@@ -40,10 +40,10 @@ bindsym $mod+Shift+q kill
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
-bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+# bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
 
-# using rofi for program launcher
-# bindsym $mod+d exec rofi -show drun -lines 3 -eh 2 -width 50 -padding 100 
+# using rofi as program launcher
+bindsym $mod+d exec rofi -show drun -theme arthur
 
 # Disabling Title bars 
 for_window [class="^.*"] border pixel 0 
@@ -109,6 +109,7 @@ set $workspace1 "1: Terminals "
 set $workspace2 "2: Code "
 set $workspace3 "3: Firefox "
 set $workspace8 "8: Chat  "
+# set $workspace8 "8"
 set $workspace9 "9: Files "
 set $workspace0 "10: VLC "
 
@@ -156,10 +157,10 @@ mode "resize" {
         # Pressing right will grow the window’s width.
         # Pressing up will shrink the window’s height.
         # Pressing down will grow the window’s height.
-        bindsym j resize shrink width 10 px or 10 ppt
+        bindsym h resize shrink width 10 px or 10 ppt
+        bindsym j resize shrink height 10 px or 10 ppt
         bindsym k resize grow height 10 px or 10 ppt
-        bindsym l resize shrink height 10 px or 10 ppt
-        bindsym semicolon resize grow width 10 px or 10 ppt
+        bindsym l resize grow width 10 px or 10 ppt
 
         # same bindings, but for the arrow keys
         bindsym Left resize shrink width 10 px or 10 ppt
@@ -212,6 +213,7 @@ client.placeholder	$color_unused		$color_normal_black	$color_unused		$color_unus
 # finds out, if available)
 bar {
         status_command i3blocks -c ~/.config/i3/i3blocks.conf
+	position top
 	colors {
 		# background	$bg-color
 		# separator	$separator-color
@@ -234,21 +236,21 @@ bar {
 
 # Manual key bindings
 
-bindsym $mod+shift+x exec ~/.config/i3/lock.sh
+bindsym $mod+shift+x exec i3lock 
 
 # Set wallpaper using feh
-exec_always --no-startup-id feh --bg-fill ~/.config/i3/Wallpapers/3.png
+exec_always --no-startup-id feh --bg-fill /usr/share/backgrounds/f28/default/normalish/f28.png
 
 # Touchpad configuration
 # Tapping Enabled 
-exec --no-startup-id xinput set-prop "SynPS/2 Synaptics TouchPad" 276 1
+exec --no-startup-id xinput set-prop "SynPS/2 Synaptics TouchPad" 280 1
 # Natural Scrolling Enabled
-exec --no-startup-id xinput set-prop "SynPS/2 Synaptics TouchPad" 284 1
+exec --no-startup-id xinput set-prop "SynPS/2 Synaptics TouchPad" 288 1
 
 # volume
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 1 +5% #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 1 -5% #decrease sound volume
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 1 toggle # mute sound
 
 # brightness 
 bindsym XF86MonBrightnessUp exec xbacklight -inc 5 # increase screen brightness
@@ -256,3 +258,7 @@ bindsym XF86MonBrightnessDown exec xbacklight -dec 5 # decrease screen brightnes
 
 # compton
 exec --no-startup-id compton --config ~/.config/i3/compton.conf
+
+# gnome-screenshot
+bindsym Print exec gnome-screenshot
+bindsym shift+Print exec gnome-screenshot --area
