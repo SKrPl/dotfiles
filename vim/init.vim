@@ -6,6 +6,9 @@ call plug#begin('~/.config/nvim/bundle')
 " File tree explorer
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 
+" Easy commenting
+Plug 'scrooloose/nerdcommenter'
+
 " fzf: Fuzzy file search
 Plug 'junegunn/fzf.vim'
 
@@ -22,10 +25,10 @@ Plug 'zchee/deoplete-jedi'
 Plug 'zchee/deoplete-clang'
 
 " Java auto-complete
-Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
+Plug 'artur-shaik/vim-javacomplete2'
 
-" JavaScript autocomplete
-Plug 'carlitux/deoplete-ternjs' 
+" Indentaion levels
+Plug 'Yggdroot/indentLine'
 
 " Asynchronous lint engine
 Plug 'w0rp/ale'
@@ -59,6 +62,13 @@ call plug#end()
 
 "================================================
 
+" NERDCommenter configuration
+
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
+
+"================================================
+
 " fzf 
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
@@ -75,6 +85,7 @@ let g:fzf_colors =
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
 
+nmap <C-p> :Files<CR>
 "================================================
 
 " Use deoplete
@@ -92,8 +103,13 @@ let g:deoplete#sources#clang#clang_header = '/usr/lib64/clang/6.0.0/'
 " Java auto-complete
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
 
-" JavaScript auto complete
-let g:deoplete#sources#ternjs#docs = 1
+"================================================
+
+" Indentline configuration
+
+let g:indentLine_setColors = 0
+let g:indentLine_char = '┆'
+set list lcs=tab:\┆\ 
 
 "================================================
 
