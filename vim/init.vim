@@ -33,6 +33,9 @@ Plug 'Yggdroot/indentLine'
 " Asynchronous lint engine
 Plug 'w0rp/ale'
 
+" Automatically update tags file
+Plug 'craigemery/vim-autotag'
+
 " Markdown preview
 " Function required to build the plugin
 function! BuildComposer(info)
@@ -52,10 +55,8 @@ Plug 'morhetz/gruvbox'
 
 " Light and configurable statusline and tabline
 Plug 'itchyny/lightline.vim'
-" Git branch in lightline
-Plug 'itchyny/vim-gitbranch'
-" ALE errors, warnings in lightline
-" Plug 'maximbaz/lightline-ale'
+Plug 'itchyny/vim-gitbranch'  " Git branch in lightline
+Plug 'maximbaz/lightline-ale' " ALE errors, warnings in lightline
 
 " Initialize plugin system
 call plug#end()
@@ -70,22 +71,25 @@ let g:NERDSpaceDelims = 1
 "================================================
 
 " fzf 
-let g:fzf_colors =
-\ { 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Comment'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PreProc'],
-  \ 'border':  ['fg', 'Ignore'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'header':  ['fg', 'Comment'] }
+
+let g:fzf_colors = {
+      \ 'fg':      ['fg', 'Normal'],
+      \ 'bg':      ['bg', 'Normal'],
+      \ 'hl':      ['fg', 'Comment'],
+      \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+      \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+      \ 'hl+':     ['fg', 'Statement'],
+      \ 'info':    ['fg', 'PreProc'],
+      \ 'border':  ['fg', 'Ignore'],
+      \ 'prompt':  ['fg', 'Conditional'],
+      \ 'pointer': ['fg', 'Exception'],
+      \ 'marker':  ['fg', 'Keyword'],
+      \ 'spinner': ['fg', 'Label'],
+      \ 'header':  ['fg', 'Comment']
+      \ }
 
 nmap <C-p> :Files<CR>
+
 "================================================
 
 " Use deoplete
@@ -143,6 +147,7 @@ let g:markdown_composer_browser = 'firefox'
 set termguicolors
 
 let g:gruvbox_italic = 1
+let g:gruvbox_contrast_dark= 'light'
 set background=dark
 colorscheme gruvbox
 
@@ -150,18 +155,36 @@ colorscheme gruvbox
 
 " Lightline showing git branch name
 let g:lightline = {
-      \ 'colorscheme': 'gruvbox',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ],
-      \   'right': [ [ 'lineinfo' ],
-      \             [ 'percent' ],
-      \             [ 'fileformat', 'fileencoding', 'filetype'] ],
-      \ },
-      \ 'component_function': {
-      \   'gitbranch': 'gitbranch#name'
-      \ },
-      \ }
+    \ 'colorscheme': 'gruvbox',
+    \ 'component_expand': {
+    \       'linter_checking': 'lightline#ale#checking',
+    \       'linter_warnings': 'lightline#ale#warnings',
+    \       'linter_errors': 'lightline#ale#errors',
+    \       'linter_ok': 'lightline#ale#ok'
+    \ },
+    \ 'component_type': {
+    \       'linter_checking': 'left',
+    \       'linter_warnings': 'warning',
+    \       'linter_errors': 'error',
+    \       'linter_ok': 'left',
+    \ },
+    \ 'active': {
+    \   'left': [ [ 'mode', 'paste' ],
+    \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ],
+    \   'right': [ [ 'linter_checking', 'linter_warnings', 'linter_errors', 'linter_ok'],
+    \             [ 'lineinfo' ],
+    \             [ 'percent' ],
+    \             [ 'fileformat', 'fileencoding', 'filetype'] ],
+    \ },
+    \ 'component_function': {
+    \   'gitbranch': 'gitbranch#name'
+    \ },
+  \ }
+
+let g:lightline#ale#indicator_checking = "\uf110  "
+let g:lightline#ale#indicator_warnings = "\uf071 "
+let g:lightline#ale#indicator_errors = "\uf05e "
+let g:lightline#ale#indicator_ok = "\uf00c  "
 
 "================================================
 
@@ -169,6 +192,7 @@ filetype plugin indent on
 
 " Line number
 set number
+set relativenumber
 
 " Automatically wrap lines
 set wrap
@@ -191,6 +215,12 @@ set nomodeline
 " Highlights current row
 set cursorline
 
+" Updatetime for faster Tagbar update
+set updatetime=400
+
+" folding method
+" set foldmethod=syntax
+
 " auto reloading of file as soon as it changes in disk
 set autoread
 
@@ -198,9 +228,13 @@ set autoread
 set exrc
 set secure
 
-" Generate tags file for ctags
-map <F5> :!ctags -R $pwd<CR><CR>
-
-" Indentation for html, css and js
+" Indentation
 autocmd FileType html,css,javascript setlocal tabstop=2 expandtab shiftwidth=2 softtabstop=2
+autocmd FileType vim setlocal tabstop=4 expandtab shiftwidth=2 softtabstop=2
+
+" Generate tags file for ctags
+nnoremap <F5> :!ctags -R $pwd<CR><CR>
+
+" Format JSON
+com! FormatJSON %!python -m json.tool
 
