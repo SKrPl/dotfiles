@@ -15,6 +15,9 @@ Plug 'junegunn/fzf.vim'
 " File structure: functions, methods, classes
 Plug 'majutsushi/tagbar'
 
+" Search indexing
+Plug 'google/vim-searchindex'
+
 " Asynchronous completion framework
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
@@ -33,8 +36,8 @@ Plug 'Yggdroot/indentLine'
 " Asynchronous lint engine
 Plug 'w0rp/ale'
 
-" Automatically update tags file
-Plug 'craigemery/vim-autotag'
+" Manages 'tags' file
+Plug 'ludovicchabant/vim-gutentags'
 
 " Markdown preview
 " Function required to build the plugin
@@ -101,8 +104,8 @@ let g:python_host_prog = '/usr/bin/python2'
 let g:deoplete#sources#jedi#show_docstring = 1
 
 " Clang auto-complete
-let g:deoplete#sources#clang#libclang_path = '/usr/lib64/libclang.so'
-let g:deoplete#sources#clang#clang_header = '/usr/lib64/clang/6.0.0/'
+let g:deoplete#sources#clang#libclang_path = '/usr/lib64/libclang.so.7'
+let g:deoplete#sources#clang#clang_header = '/usr/lib64/clang'
 
 " Java auto-complete
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
@@ -133,6 +136,11 @@ let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 " Navigating through errors
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
+
+"================================================
+
+" vim-gutentags
+let g:gutentags_file_list_command = 'rg --files'
 
 "================================================
 
@@ -232,9 +240,9 @@ set secure
 autocmd FileType html,css,javascript setlocal tabstop=2 expandtab shiftwidth=2 softtabstop=2
 autocmd FileType vim setlocal tabstop=4 expandtab shiftwidth=2 softtabstop=2
 
-" Generate tags file for ctags
-nnoremap <F5> :!ctags -R $pwd<CR><CR>
-
 " Format JSON
 com! FormatJSON %!python -m json.tool
 
+" Paste from clipboard
+inoremap <leader>pc <ESC>"+pi
+nnoremap <leader>pc "+p
