@@ -18,47 +18,56 @@ Plug 'majutsushi/tagbar'
 " Search indexing
 Plug 'google/vim-searchindex'
 
+" Language client neovim
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
+
 " Asynchronous completion framework
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
-" Python auto-complete
-Plug 'zchee/deoplete-jedi'
+" Python autocomplete
+Plug 'deoplete-plugins/deoplete-jedi'
 
-" Clang auto-complete
+" Clang autocomplete
 Plug 'zchee/deoplete-clang'
 
-" Java auto-complete
+" Java autocomplete
 Plug 'artur-shaik/vim-javacomplete2'
+
+" JS autocomplete
+Plug 'carlitux/deoplete-ternjs'
 
 " Indentaion levels
 Plug 'Yggdroot/indentLine'
 
+" Git gutter
+Plug 'airblade/vim-gitgutter'
+
 " Asynchronous lint engine
-Plug 'w0rp/ale'
+Plug 'dense-analysis/ale'
 
 " Manages 'tags' file
 Plug 'ludovicchabant/vim-gutentags'
 
-" Markdown preview
-" Function required to build the plugin
-function! BuildComposer(info)
-  if a:info.status != 'unchanged' || a:info.force
-    if has('nvim')
-      !cargo build --release
-    else
-      !cargo build --release --no-default-features --features json-rpc
-    endif
-  endif
-endfunction
-" end of function
-Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
+" Fast motions in vim
+Plug 'easymotion/vim-easymotion'
+
+" Markdown viewer
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+
+" Git wrapper for vim
+Plug 'tpope/vim-fugitive'
 
 " Gruvbox theme
 Plug 'morhetz/gruvbox'
 
+" Ayu theme
+Plug 'ayu-theme/ayu-vim'
+
 " Light and configurable statusline and tabline
 Plug 'itchyny/lightline.vim'
-Plug 'itchyny/vim-gitbranch'  " Git branch in lightline
 Plug 'maximbaz/lightline-ale' " ALE errors, warnings in lightline
 
 " Initialize plugin system
@@ -91,24 +100,38 @@ let g:fzf_colors = {
       \ 'header':  ['fg', 'Comment']
       \ }
 
-nmap <C-p> :Files<CR>
+nnoremap <C-p> :Files<CR>
+
+"================================================
+
+" Neovim language client
+let g:LanguageClient_autoStart = 1
+
+" TODO: Add LSP Server configs
 
 "================================================
 
 " Use deoplete
 let g:deoplete#enable_at_startup = 1
 
-" Python auto-complete
+" deoplete omni functions
+let g:deoplete#omni#functions= {}
+let g:deoplete#omni#functions.java = 'javacomplete#Complete' " Java autocomplete
+
+" Python autocomplete
 let g:python3_host_prog = '/usr/bin/python3'
 let g:python_host_prog = '/usr/bin/python2'
 let g:deoplete#sources#jedi#show_docstring = 1
 
-" Clang auto-complete
-let g:deoplete#sources#clang#libclang_path = '/usr/lib64/libclang.so.7'
+" Clang autocomplete
+let g:deoplete#sources#clang#libclang_path = '/usr/lib64/libclang.so.8'
 let g:deoplete#sources#clang#clang_header = '/usr/lib64/clang'
 
-" Java auto-complete
-autocmd FileType java setlocal omnifunc=javacomplete#Complete
+" Java autocomplete
+" autocmd FileType java setlocal omnifunc=javacomplete#Complete
+
+" JS autocomplete
+let g:deoplete#sources#ternjs#docs = 1
 
 "================================================
 
@@ -141,6 +164,8 @@ nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
 " vim-gutentags
 let g:gutentags_file_list_command = 'rg --files'
+let g:gutentags_cache_dir = '~/.cache/gutentags'
+set statusline+=%{gutentags#statusline()}
 
 "================================================
 
@@ -154,21 +179,23 @@ let g:markdown_composer_browser = 'firefox'
 " Truecolors
 set termguicolors
 
-let g:gruvbox_italic = 1
-let g:gruvbox_contrast_dark= 'light'
-set background=dark
-colorscheme gruvbox
+" let g:gruvbox_italic = 1
+" let g:gruvbox_contrast_dark= 'light'
+" set background=dark
+
+let ayucolor = "mirage"
+colorscheme ayu
 
 "================================================
 
 " Lightline showing git branch name
 let g:lightline = {
-    \ 'colorscheme': 'gruvbox',
+    \ 'colorscheme': 'ayu',
     \ 'component_expand': {
     \       'linter_checking': 'lightline#ale#checking',
     \       'linter_warnings': 'lightline#ale#warnings',
     \       'linter_errors': 'lightline#ale#errors',
-    \       'linter_ok': 'lightline#ale#ok'
+    \       'linter_ok': 'lightline#ale#ok',
     \ },
     \ 'component_type': {
     \       'linter_checking': 'left',
@@ -185,7 +212,7 @@ let g:lightline = {
     \             [ 'fileformat', 'fileencoding', 'filetype'] ],
     \ },
     \ 'component_function': {
-    \   'gitbranch': 'gitbranch#name'
+    \   'gitbranch': 'fugitive#head'
     \ },
   \ }
 
