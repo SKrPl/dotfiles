@@ -15,9 +15,6 @@ Plug 'junegunn/fzf.vim'
 " File structure: functions, methods, classes
 Plug 'majutsushi/tagbar'
 
-" Search indexing
-Plug 'google/vim-searchindex'
-
 " Language client neovim
 Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
@@ -25,7 +22,7 @@ Plug 'autozimu/LanguageClient-neovim', {
     \ }
 
 " Asynchronous completion framework
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins', 'tag': '5.1' }
 
 " Python autocomplete
 Plug 'deoplete-plugins/deoplete-jedi'
@@ -252,6 +249,9 @@ set cursorline
 
 " Updatetime for faster Tagbar update
 set updatetime=400
+
+" Shows number of string matches
+set shortmess-=S
 
 " folding method
 " set foldmethod=syntax

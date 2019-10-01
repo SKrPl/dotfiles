@@ -1,5 +1,3 @@
-" work specific (JS and MacOS) init.vim
-
 "================================================
 
 " Specifies plugin directory
@@ -29,9 +27,6 @@ Plug 'deoplete-plugins/deoplete-jedi'
 " JS autocomplete
 Plug 'carlitux/deoplete-ternjs'
 
-" Search indexing
-Plug 'google/vim-searchindex'
-
 " Indentaion levels
 Plug 'Yggdroot/indentLine'
 
@@ -51,7 +46,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'easymotion/vim-easymotion'
 
 " Dev icons
-Plug 'ryanoasis/vim-devicons'
+" Plug 'ryanoasis/vim-devicons'
 
 " Track the engine.
 Plug 'SirVer/ultisnips'
@@ -167,6 +162,11 @@ let g:ale_fixers = {
     \ 'javascript': ['eslint']
     \ }
 
+" ALE language specific linters
+let g:ale_linters = {
+    \ 'javascript': ['eslint']
+    \ }
+
 "================================================
 
 " vim-gutentags
@@ -202,20 +202,20 @@ let g:mkdp_refresh_slow = 0
 " Truecolors
 set termguicolors
 
-" let g:gruvbox_italic = 1
-" let g:gruvbox_contrast_dark= 'light'
-" set background=dark
-" colorscheme gruvbox
+let g:gruvbox_italic = 1
+let g:gruvbox_contrast_dark= 'light'
+set background=dark
+colorscheme gruvbox
 
-let ayucolor='mirage'
-colorscheme ayu
+" let ayucolor='mirage'
+" colorscheme ayu
 
 "================================================
 
 " Lightline showing git branch name
 
 let g:lightline = {
-    \ 'colorscheme': 'ayu',
+    \ 'colorscheme': 'gruvbox',
     \ 'component_expand': {
     \       'linter_checking': 'lightline#ale#checking',
     \       'linter_warnings': 'lightline#ale#warnings',
@@ -278,6 +278,9 @@ set cursorline
 " Updatetime for faster Tagbar update
 set updatetime=400
 
+" Shows number of string matches
+set shortmess-=S
+
 " folding method
 " set foldmethod=syntax
 
@@ -289,7 +292,7 @@ set exrc
 set secure
 
 " Indentation
-autocmd FileType html,css,javascript setlocal tabstop=2 expandtab shiftwidth=2 softtabstop=2
+autocmd FileType markdown,html,css,javascript setlocal tabstop=2 expandtab shiftwidth=2 softtabstop=2
 autocmd FileType json,yaml setlocal tabstop=2 expandtab shiftwidth=2 softtabstop=2
 autocmd FileType vim setlocal tabstop=4 expandtab shiftwidth=2 softtabstop=2
 

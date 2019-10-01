@@ -52,7 +52,7 @@ for_window [window_role="pop-up"] floating enable
 
 # static gaps
 gaps inner 10
-gaps outer 10
+gaps outer 5
 
 # change focus
 bindsym $mod+h focus left
@@ -79,10 +79,10 @@ bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
 # split in horizontal orientation
-bindsym $mod+s split h
+bindsym $mod+s split v
 
 # split in vertical orientation
-bindsym $mod+v split v
+bindsym $mod+v split h
 
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
@@ -139,6 +139,7 @@ bindsym $mod+Shift+0 move container to workspace $workspace0
 
 # Opening applications in specific workspace
 assign [class="Firefox"] $workspace3
+assign [class="Brave-browser"] $workspace3
 assign [class="Nautilus"] $workspace9
 assign [class="vlc"] $workspace0
 
@@ -177,14 +178,6 @@ bindsym $mod+r mode "resize"
 
 # Some global variables for colors
 
-# arc theme dark
-set $bg-color			#2F343F
-set $inactive-bg-color		#2F343F
-set $text-color			#F3F4F5
-set $inactive-text-color	#676E7D
-set $urgent-bg-color		#E53935
-set $separator-color		#757575
-
 # gruvbox theme
 set $color_normal_white		#A89984
 set $color_bright_white		#EBDBB2
@@ -195,13 +188,6 @@ set $color_normal_black		#282828
 set $color_unused		#FF0000
 
 # window colors
-
-#			border			background		text			indicator
-# client.focused	$bg-color		$bg-color		$text-color		#00FF00
-# client.unfocused	$inactive-bg-color	$inactive-bg-color	$inactive-text-color	#00FF00
-# client.urgent		$urgent-bg-color	$urgent-bg-color	$text-color		#00FF00	
-
-
 # Colors		border			background		text			indicator	child_border
 client.focused		$color_bright_gray	$color_bright_gray	$color_bright_white	$color_unused	$color_normal_white
 client.focused_inactive	$color_bright_gray	$color_bright_gray	$color_bright_white	$color_unused	$color_normal_black
@@ -212,21 +198,13 @@ client.placeholder	$color_unused		$color_normal_black	$color_unused		$color_unus
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-        status_command i3blocks -c ~/.config/i3/i3blocks.conf
+	status_command i3blocks -c ~/.config/i3/i3blocks.conf
 	position top
 	colors {
-		# background	$bg-color
-		# separator	$separator-color
 		background	$color_normal_gray
 		separator	$color_bright_gray
 		statusline	$color_bright_white
 		#			border			background		text
-		# focused_workspace	$bg-color		$bg-color		$text-color
-		# inactive_workspace	$inactive-bg-color	$inactive-bg-color	$inactive-text-color
-		# urgent_workspace	$urgent-bg-color	$urgent-bg-color	$text-color
-		# focused_workspace	"#FFFFFF"		$bg-color		$text-color
-		# inactive_workspace	"#FFFFFF"		$inactive-bg-color	$inactive-text-color
-		# urgent_workspace	"#FFFFFF"		$urgent-bg-color	$text-color
 		focused_workspace	$color_bright_gray	$color_bright_gray	$color_bright_white
 		active_workspace	$color_unused		$color_unused		$color_unused
 		inactive_workspace	$color_normal_gray	$color_normal_gray	$color_bright_white
@@ -236,15 +214,15 @@ bar {
 
 # Manual key bindings
 
-bindsym $mod+shift+x exec i3lock 
+bindsym $mod+Shift+x exec i3lock 
 
 # Set wallpaper using feh
-exec_always --no-startup-id feh --bg-fill /usr/share/backgrounds/f29/default/normalish/f29.png
+exec_always --no-startup-id feh --bg-fill /usr/share/backgrounds/f30/default/normalish/f30.png
 
 # volume
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 1 toggle # mute sound
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
 
 # brightness 
 bindsym XF86MonBrightnessUp exec xbacklight -inc 5 # increase screen brightness
@@ -254,5 +232,9 @@ bindsym XF86MonBrightnessDown exec xbacklight -dec 5 # decrease screen brightnes
 exec --no-startup-id compton --config ~/.config/i3/compton.conf
 
 # gnome-screenshot
-bindsym Print exec gnome-screenshot
-bindsym shift+Print exec gnome-screenshot --area
+# bindsym Print exec gnome-screenshot
+# bindsym Shift+Print exec gnome-screenshot --area
+
+# multiple monitor setup
+exec --no-startup-id xrandr --output HDMI1 --auto --right-of eDP1
+bindsym $mod+p move workspace to output right
