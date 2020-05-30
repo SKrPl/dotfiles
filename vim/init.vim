@@ -10,10 +10,14 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'scrooloose/nerdcommenter'
 
 " fzf: Fuzzy file search
+Plug 'junegunn/fzf', { 'dir': '~/.config/nvim/bundle/fzf', 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
 
-" File structure: functions, methods, classes
-Plug 'majutsushi/tagbar'
+" Language pack
+Plug 'sheerun/vim-polyglot'
+
+" Floating window for completion preview
+Plug 'ncm2/float-preview.nvim'
 
 " Language client neovim
 Plug 'autozimu/LanguageClient-neovim', {
@@ -22,31 +26,13 @@ Plug 'autozimu/LanguageClient-neovim', {
     \ }
 
 " Asynchronous completion framework
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins', 'tag': '5.1' }
-
-" Python autocomplete
-Plug 'deoplete-plugins/deoplete-jedi'
-
-" Clang autocomplete
-Plug 'zchee/deoplete-clang'
-
-" Java autocomplete
-Plug 'artur-shaik/vim-javacomplete2'
-
-" JS autocomplete
-Plug 'carlitux/deoplete-ternjs'
+Plug 'Shougo/deoplete.nvim'
 
 " Indentaion levels
 Plug 'Yggdroot/indentLine'
 
-" Git gutter
-Plug 'airblade/vim-gitgutter'
-
 " Asynchronous lint engine
 Plug 'dense-analysis/ale'
-
-" Manages 'tags' file
-Plug 'ludovicchabant/vim-gutentags'
 
 " Fast motions in vim
 Plug 'easymotion/vim-easymotion'
@@ -59,9 +45,6 @@ Plug 'tpope/vim-fugitive'
 
 " Gruvbox theme
 Plug 'morhetz/gruvbox'
-
-" Ayu theme
-Plug 'ayu-theme/ayu-vim'
 
 " Light and configurable statusline and tabline
 Plug 'itchyny/lightline.vim'
@@ -82,20 +65,20 @@ let g:NERDSpaceDelims = 1
 " fzf 
 
 let g:fzf_colors = {
-      \ 'fg':      ['fg', 'Normal'],
-      \ 'bg':      ['bg', 'Normal'],
-      \ 'hl':      ['fg', 'Comment'],
-      \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-      \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-      \ 'hl+':     ['fg', 'Statement'],
-      \ 'info':    ['fg', 'PreProc'],
-      \ 'border':  ['fg', 'Ignore'],
-      \ 'prompt':  ['fg', 'Conditional'],
-      \ 'pointer': ['fg', 'Exception'],
-      \ 'marker':  ['fg', 'Keyword'],
-      \ 'spinner': ['fg', 'Label'],
-      \ 'header':  ['fg', 'Comment']
-      \ }
+    \ 'fg':      ['fg', 'Normal'],
+    \ 'bg':      ['bg', 'Normal'],
+    \ 'hl':      ['fg', 'Comment'],
+    \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+    \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+    \ 'hl+':     ['fg', 'Statement'],
+    \ 'info':    ['fg', 'PreProc'],
+    \ 'border':  ['fg', 'Ignore'],
+    \ 'prompt':  ['fg', 'Conditional'],
+    \ 'pointer': ['fg', 'Exception'],
+    \ 'marker':  ['fg', 'Keyword'],
+    \ 'spinner': ['fg', 'Label'],
+    \ 'header':  ['fg', 'Comment']
+    \ }
 
 nnoremap <C-p> :Files<CR>
 
@@ -104,31 +87,24 @@ nnoremap <C-p> :Files<CR>
 " Neovim language client
 let g:LanguageClient_autoStart = 1
 
-" TODO: Add LSP Server configs
+" LSP Server configs
+let g:LanguageClient_serverCommands = {
+    \ 'cpp' : ['clangd-9', '-background-index'],
+    \ 'c' : ['clangd-9', '-background-index'],
+    \ 'python': ['~/Applications/anaconda3/envs/neovim/bin/pyls']
+    \ }
+
+set hidden
+
+" keymaps
+nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 
 "================================================
 
 " Use deoplete
 let g:deoplete#enable_at_startup = 1
 
-" deoplete omni functions
-let g:deoplete#omni#functions= {}
-let g:deoplete#omni#functions.java = 'javacomplete#Complete' " Java autocomplete
-
-" Python autocomplete
-let g:python3_host_prog = '/usr/bin/python3'
-let g:python_host_prog = '/usr/bin/python2'
-let g:deoplete#sources#jedi#show_docstring = 1
-
-" Clang autocomplete
-let g:deoplete#sources#clang#libclang_path = '/usr/lib64/libclang.so.8'
-let g:deoplete#sources#clang#clang_header = '/usr/lib64/clang'
-
-" Java autocomplete
-" autocmd FileType java setlocal omnifunc=javacomplete#Complete
-
-" JS autocomplete
-let g:deoplete#sources#ternjs#docs = 1
+set completeopt-=preview
 
 "================================================
 
@@ -153,21 +129,16 @@ let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 
+" Disable linters, LSP is used for linting for these languages 
+let g:ale_linters = {
+    \   'c': [],
+    \   'cpp': [],
+    \   'python': []
+    \}
+
 " Navigating through errors
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
-
-"================================================
-
-" vim-gutentags
-let g:gutentags_file_list_command = 'rg --files'
-let g:gutentags_cache_dir = '~/.cache/gutentags'
-set statusline+=%{gutentags#statusline()}
-
-"================================================
-
-" Markdown composer
-let g:markdown_composer_browser = 'firefox'
 
 "================================================
 
@@ -176,18 +147,17 @@ let g:markdown_composer_browser = 'firefox'
 " Truecolors
 set termguicolors
 
-" let g:gruvbox_italic = 1
-" let g:gruvbox_contrast_dark= 'light'
-" set background=dark
+let g:gruvbox_italic = 1
+let g:gruvbox_contrast_dark= 'light'
+set background=dark
 
-let ayucolor = "mirage"
-colorscheme ayu
+colorscheme gruvbox
 
 "================================================
 
 " Lightline showing git branch name
 let g:lightline = {
-    \ 'colorscheme': 'ayu',
+    \ 'colorscheme': 'gruvbox',
     \ 'component_expand': {
     \       'linter_checking': 'lightline#ale#checking',
     \       'linter_warnings': 'lightline#ale#warnings',
@@ -209,9 +179,20 @@ let g:lightline = {
     \             [ 'fileformat', 'fileencoding', 'filetype'] ],
     \ },
     \ 'component_function': {
-    \   'gitbranch': 'fugitive#head'
+    \   'gitbranch': 'fugitive#head',
+    \   'filename': 'LightlineFilename'
     \ },
-  \ }
+\ }
+
+" relative path of a file
+function! LightlineFilename()
+  let root = fnamemodify(get(b:, 'git_dir'), ':h')
+  let path = expand('%:p')
+  if path[:len(root)-1] ==# root
+    return path[len(root)+1:]
+  endif
+  return expand('%')
+endfunction
 
 let g:lightline#ale#indicator_checking = "\uf110  "
 let g:lightline#ale#indicator_warnings = "\uf071 "
@@ -247,9 +228,6 @@ set nomodeline
 " Highlights current row
 set cursorline
 
-" Updatetime for faster Tagbar update
-set updatetime=400
-
 " Shows number of string matches
 set shortmess-=S
 
@@ -265,7 +243,8 @@ set secure
 
 " Indentation
 autocmd FileType html,css,javascript setlocal tabstop=2 expandtab shiftwidth=2 softtabstop=2
-autocmd FileType vim setlocal tabstop=4 expandtab shiftwidth=2 softtabstop=2
+autocmd FileType vim setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=2
+autocmd FileType markdown setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=4
 
 " Format JSON
 com! FormatJSON %!python -m json.tool
