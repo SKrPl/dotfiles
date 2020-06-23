@@ -104,6 +104,9 @@ nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 " Use deoplete
 let g:deoplete#enable_at_startup = 1
 
+" Neovim python3 host prog
+let g:python3_host_prog = '/home/siddhant/Applications/anaconda3/envs/neovim/bin/python'
+
 set completeopt-=preview
 
 "================================================
