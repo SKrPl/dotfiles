@@ -1,5 +1,12 @@
 "================================================
 
+" Automatically add vim-plug and install all plugins
+if empty(glob('~/.config/nvim/autoload/plug.vim'))
+    silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
+                \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 " Specifies plugin directory
 call plug#begin('~/.config/nvim/bundle')
 
@@ -10,14 +17,14 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'scrooloose/nerdcommenter'
 
 " fzf: Fuzzy file search
-Plug 'junegunn/fzf', { 'dir': '~/.config/nvim/bundle/fzf', 'do': './install --bin' }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
 " Language pack
 Plug 'sheerun/vim-polyglot'
 
-" Floating window for completion preview
-Plug 'ncm2/float-preview.nvim'
+" Python code folding
+Plug 'tmhedberg/SimpylFold'
 
 " Language client neovim
 Plug 'autozimu/LanguageClient-neovim', {
@@ -89,15 +96,19 @@ let g:LanguageClient_autoStart = 1
 
 " LSP Server configs
 let g:LanguageClient_serverCommands = {
-    \ 'cpp' : ['clangd-9', '-background-index'],
-    \ 'c' : ['clangd-9', '-background-index'],
-    \ 'python': ['~/Applications/anaconda3/envs/neovim/bin/pyls']
+    \ 'cpp' : ['clangd', '-background-index'],
+    \ 'c' : ['clangd', '-background-index'],
+    \ 'python': ['~/Applications/miniconda3/envs/pyls/bin/pyls']
     \ }
+
+" Disable LSP diagnostic use ALE for this
+let g:LanguageClient_diagnosticsEnable = 0
 
 set hidden
 
 " keymaps
 nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
 
 "================================================
 
@@ -105,7 +116,7 @@ nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 let g:deoplete#enable_at_startup = 1
 
 " Neovim python3 host prog
-let g:python3_host_prog = '/home/siddhant/Applications/anaconda3/envs/neovim/bin/python'
+let g:python3_host_prog = '/home/siddhant/Applications/miniconda3/envs/neovim/bin/python'
 
 set completeopt-=preview
 
@@ -121,12 +132,6 @@ set list lcs=tab:\┆\
 
 " ALE : Asynchronous Lint Engine
 
-" Lint only after saving file
-" let g:ale_lint_on_text_changed = 'never'
-
-" Don't lint when the file is opened
-" let g:ale_lint_on_enter = 0
-
 " Display message format
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
@@ -134,10 +139,11 @@ let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 
 " Disable linters, LSP is used for linting for these languages 
 let g:ale_linters = {
-    \   'c': [],
-    \   'cpp': [],
-    \   'python': []
+    \   'python': ['pyls'],
+    \   'cpp': ['clangd', 'cc']
     \}
+
+let g:ale_python_pyls_executable = '/home/siddhant/Applications/miniconda3/envs/pyls/bin/pyls'
 
 " Navigating through errors
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
@@ -197,10 +203,12 @@ function! LightlineFilename()
   return expand('%')
 endfunction
 
-let g:lightline#ale#indicator_checking = "\uf110  "
-let g:lightline#ale#indicator_warnings = "\uf071 "
-let g:lightline#ale#indicator_errors = "\uf05e "
-let g:lightline#ale#indicator_ok = "\uf00c  "
+" Use unicode glyphs for status
+let g:lightline#ale#indicator_checking = "  " " spinner
+let g:lightline#ale#indicator_infos = "  " " info
+let g:lightline#ale#indicator_warnings = "  " " exclamation-triangle
+let g:lightline#ale#indicator_errors = "  " " ban
+let g:lightline#ale#indicator_ok = "  " " check-square
 
 "================================================
 
@@ -219,6 +227,11 @@ set showmatch
 " Incremental search
 set incsearch
 
+" Show effect of command incrementally
+if has('nvim')
+    set inccommand=split
+endif
+
 " Shows matching commands in command mode when TAB is pressed
 set wildmenu
 
@@ -234,8 +247,10 @@ set cursorline
 " Shows number of string matches
 set shortmess-=S
 
-" folding method
-" set foldmethod=syntax
+" folding
+set foldmethod=syntax
+set foldcolumn=1 " 1 column in sign column to indicate folding
+set foldlevelstart=99 " all the folds are opened when a buffer is opened
 
 " auto reloading of file as soon as it changes in disk
 set autoread
@@ -250,7 +265,7 @@ autocmd FileType vim setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=2
 autocmd FileType markdown setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=4
 
 " Format JSON
-com! FormatJSON %!python -m json.tool
+com! FormatJSON %!python3 -m json.tool
 
 " Paste from clipboard
 inoremap <leader>pc <ESC>"+pi
