@@ -7,11 +7,16 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+
 " Specifies plugin directory
 call plug#begin('~/.config/nvim/bundle')
 
 " File tree explorer
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+
+" requires
+" Plug 'kyazdani42/nvim-tree.lua'
+" Plug 'kyazdani42/nvim-web-devicons' " for file icons
 
 " Easy commenting
 Plug 'scrooloose/nerdcommenter'
@@ -20,26 +25,32 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
-" Language pack
-Plug 'sheerun/vim-polyglot'
+" Neovim treesitter
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
-" Python code folding
-Plug 'tmhedberg/SimpylFold'
+" Rice Native LSP UI
+Plug 'glepnir/lspsaga.nvim'
 
-" Language client neovim
-Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ }
+" LSP configurations
+Plug 'neovim/nvim-lspconfig'
 
-" Asynchronous completion framework
-Plug 'Shougo/deoplete.nvim'
+" Auto complete plugin for neovim
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+
+" Snippet engine, required for LSP auto import
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
+
+" Display function signature for completions
+Plug 'Shougo/echodoc.vim'
 
 " Indentaion levels
 Plug 'Yggdroot/indentLine'
 
 " Asynchronous lint engine
-Plug 'dense-analysis/ale'
+" Plug 'dense-analysis/ale'
 
 " Fast motions in vim
 Plug 'easymotion/vim-easymotion'
@@ -52,6 +63,9 @@ Plug 'tpope/vim-fugitive'
 
 " Gruvbox theme
 Plug 'morhetz/gruvbox'
+
+" Nord theme
+Plug 'arcticicestudio/nord-vim'
 
 " Light and configurable statusline and tabline
 Plug 'itchyny/lightline.vim'
@@ -66,6 +80,22 @@ call plug#end()
 
 " Add spaces after comment delimiters by default
 let g:NERDSpaceDelims = 1
+
+"================================================
+
+" Neovim tree
+
+nnoremap <C-n> :NvimTreeToggle<CR>
+nnoremap <leader>r :NvimTreeRefresh<CR>
+nnoremap <leader>n :NvimTreeFindFile<CR>
+
+"================================================
+
+" Nerd commenter
+
+" Align line-wise comment delimiters flush left instead of following code indentation
+let g:NERDDefaultAlign = 'left'
+
 
 "================================================
 
@@ -88,37 +118,190 @@ let g:fzf_colors = {
     \ }
 
 nnoremap <C-p> :Files<CR>
+nnoremap <leader>bu :Buffers<CR>
 
 "================================================
 
-" Neovim language client
-let g:LanguageClient_autoStart = 1
+" Native LSP
 
-" LSP Server configs
-let g:LanguageClient_serverCommands = {
-    \ 'cpp' : ['clangd', '-background-index'],
-    \ 'c' : ['clangd', '-background-index'],
-    \ 'python': ['~/Applications/miniconda3/envs/pyls/bin/pyls']
-    \ }
+lua << EOF
 
-" Disable LSP diagnostic use ALE for this
-let g:LanguageClient_diagnosticsEnable = 0
+local nvim_lsp = require('lspconfig')
+local saga = require 'lspsaga'
 
-set hidden
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
-" keymaps
-nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
+
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<cmd>lua require("lspsaga.hover").render_hover_doc()<CR>', opts)
+  buf_set_keymap('n', '<C-f>', '<cmd>lua require("lspsaga.action").smart_scroll_with_saga(1)<CR>', opts)
+  buf_set_keymap('n', '<C-b>', '<cmd>lua require("lspsaga.action").smart_scroll_with_saga(-1)<CR>', opts)
+  -- buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+
+end
+
+-- Diagnostic configuration
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+  vim.lsp.diagnostic.on_publish_diagnostics, {
+    -- Disable virtual_text
+    virtual_text = false
+  }
+)
+
+-- The nvim-cmp almost supports LSP's capabilities. So you should advertise it to LSP servers..
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+
+-- LSP saga configuration
+saga.init_lsp_saga {
+  use_saga_diagnostic_sign = true,
+  error_sign = ' ', -- ban
+  warn_sign = ' ', -- exclamation-triangle
+  hint_sign = ' ', -- lightbulb
+  infor_sign = ' ', -- info
+  dianostic_header_icon = '   '
+}
+
+-- LSP server configurations
+nvim_lsp.pyright.setup {
+  on_attach = on_attach,
+  flags = {
+    debounce_text_changes = 150,
+  }
+}
+
+nvim_lsp.clangd.setup {
+  on_attach = on_attach,
+  flags = {
+    debounce_text_changes = 150,
+  }
+}
+
+nvim_lsp.gopls.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  flags = {
+    debounce_text_changes = 150,
+  }
+}
+
+nvim_lsp.efm.setup {
+  on_attach = on_attach,
+  filetypes = {
+    "python",
+    -- "go"
+  },
+  init_options = {
+    documentFormatting = true,
+    codeAction = true
+  },
+  settings = {
+    languages = {
+      python = {
+        {
+          lintCommand = "flake8 --stdin-display-name ${INPUT} -",
+          lintStdin = true,
+          lintFormats = { "%f:%l:%c: %m" },
+        },
+        {
+          formatCommand = "isort --quiet -",
+          formatStdin = true
+        },
+        {
+          formatCommand = "black -l 79 --quiet -",
+          formatStdin = true
+        }
+      },
+      -- go = {
+      --   {
+      --     lintCommand = "errcheck",
+      --     lintStdin = true,
+      --     lintFormats = { "%f:%l:%c: %m" },
+      --   },
+      -- }
+    }
+  }
+}
+
+EOF
 
 "================================================
 
-" Use deoplete
-let g:deoplete#enable_at_startup = 1
+" Neovim treesitter
 
-" Neovim python3 host prog
-let g:python3_host_prog = '/home/siddhant/Applications/miniconda3/envs/neovim/bin/python'
+lua << EOF
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true
+  },
+  incremental_selection = {
+    enabled = false
+  },
+  indent = {
+    enabled = true
+  },
+}
+EOF
 
-set completeopt-=preview
+"================================================
+
+" Nvim Cmp (for autocompletion)
+
+set completeopt=menu,menuone,noselect
+
+lua <<EOF
+  local cmp = require('cmp')
+
+  cmp.setup {
+    snippet = {
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` user.
+      end,
+    },
+    mapping = {
+      ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.close(),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    },
+    -- You should specify your *installed* sources.
+    sources = {
+      { name = 'buffer' },
+      { name = 'nvim_lsp' },
+    },
+
+    preselect = cmp.PreselectMode.None
+  }
+EOF
+
+"================================================
+
+" Echodoc
+
+let g:echodoc#enable_at_startup = 1
 
 "================================================
 
@@ -139,11 +322,9 @@ let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 
 " Disable linters, LSP is used for linting for these languages 
 let g:ale_linters = {
-    \   'python': ['pyls'],
-    \   'cpp': ['clangd', 'cc']
+    \   'python': [],
+    \   'cpp': []
     \}
-
-let g:ale_python_pyls_executable = '/home/siddhant/Applications/miniconda3/envs/pyls/bin/pyls'
 
 " Navigating through errors
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
@@ -161,6 +342,7 @@ let g:gruvbox_contrast_dark= 'light'
 set background=dark
 
 colorscheme gruvbox
+" colorscheme nord
 
 "================================================
 
@@ -212,6 +394,9 @@ let g:lightline#ale#indicator_ok = "  " " check-square
 
 "================================================
 
+" Neovim python3 host prog
+let g:python3_host_prog = '/home/siddhant/Applications/miniconda3/envs/neovim/bin/python'
+
 filetype plugin indent on
 
 " Line number
@@ -235,6 +420,9 @@ endif
 " Shows matching commands in command mode when TAB is pressed
 set wildmenu
 
+" Always show the signcolumn so that it doesn't distract due to LSP diagnostic
+" set signcolumn=yes
+
 " VIM modes are only shown in lightline
 set noshowmode
 
@@ -248,7 +436,8 @@ set cursorline
 set shortmess-=S
 
 " folding
-set foldmethod=syntax
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
 set foldcolumn=1 " 1 column in sign column to indicate folding
 set foldlevelstart=99 " all the folds are opened when a buffer is opened
 
@@ -259,10 +448,15 @@ set autoread
 set exrc
 set secure
 
+" Show default (neov)vim info when IndentLine is enabled
+" https://github.com/Yggdroot/indentLine/issues/315
+autocmd VimEnter * if bufname('%') == '' | IndentLinesDisable | endif
+
 " Indentation
 autocmd FileType html,css,javascript setlocal tabstop=2 expandtab shiftwidth=2 softtabstop=2
 autocmd FileType vim setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=2
 autocmd FileType markdown setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=4
+autocmd FileType lua setlocal tabstop=2 expandtab shiftwidth=2 softtabstop=2
 
 " Format JSON
 com! FormatJSON %!python3 -m json.tool
@@ -270,3 +464,7 @@ com! FormatJSON %!python3 -m json.tool
 " Paste from clipboard
 inoremap <leader>pc <ESC>"+pi
 nnoremap <leader>pc "+p
+
+" capitalize the word
+inoremap <leader><c-u> <esc>bveUea
+nnoremap <leader><c-u> bveUe
