@@ -31,12 +31,12 @@ Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
 " 9000+ Snippets
 Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
 
-" Snippet engine, required for LSP auto import
-Plug 'hrsh7th/vim-vsnip'
-Plug 'hrsh7th/vim-vsnip-integ'
-
 " Display function signature for completions
 Plug 'Shougo/echodoc.vim'
+
+" Ultra fold neovim
+Plug 'kevinhwang91/promise-async'
+Plug 'kevinhwang91/nvim-ufo'
 
 " Indentaion levels
 Plug 'Yggdroot/indentLine'
@@ -157,10 +157,16 @@ for _, lsp in pairs(servers) do
         on_attach = on_attach,
         flags = {
             debounce_text_changes = 150,
+        },
+        foldingRange = {
+            dynamicRegistration = false,
+            lineFoldingOnly = true
         }
     -- })
     }))
 end
+
+require('ufo').setup();
 
 EOF
 
@@ -292,9 +298,8 @@ set cursorline
 set shortmess-=S
 
 " folding
-set foldmethod=expr
-set foldexpr=nvim_treesitter#foldexpr()
 set foldcolumn=1 " 1 column in sign column to indicate folding
+set foldlevel=99
 set foldlevelstart=99 " all the folds are opened when a buffer is opened
 
 " auto reloading of file as soon as it changes in disk
