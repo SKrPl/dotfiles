@@ -12,9 +12,10 @@ endif
 call plug#begin('~/.config/nvim/bundle')
 
 " File tree explorer
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'nvim-tree/nvim-tree.lua'
 
-Plug 'kyazdani42/nvim-web-devicons' " icons
+" Icons
+Plug 'kyazdani42/nvim-web-devicons' 
 
 " Easy commenting
 Plug 'scrooloose/nerdcommenter'
@@ -50,6 +51,9 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 " Git wrapper for vim
 Plug 'tpope/vim-fugitive'
 
+" Git integrations for buffers
+Plug 'lewis6991/gitsigns.nvim'
+
 " Gruvbox theme
 Plug 'morhetz/gruvbox'
 
@@ -64,6 +68,7 @@ call plug#end()
 lua << EOF
 
 -- load lua configs
+require('explorer') -- file explorer, nvim-tree
 require('editor')
 require('commenter') -- nerd commenter
 require('fuzzy-finder') -- telescope
@@ -75,7 +80,8 @@ require('nvim-ts') -- treesitter
 
 -- ultra fold neovim
 -- should be called after lsp and tree-sitter setup
-require('ufo').setup();
+require('ufo').setup()
+require('gitsigns').setup()
 
 require('filetype-configs') -- file extension specific indentation
 require('keybindings') -- custom keybindings

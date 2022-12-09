@@ -85,3 +85,4 @@ for filetype, config in pairs(filetype_config) do
     end
   })
 end
+
