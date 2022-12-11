@@ -1,4 +1,6 @@
 local nvim_lsp = require('lspconfig')
+
+vim.g.coq_settings = { auto_start = true } -- to be called before importing coq
 local coq = require('coq')
 
 local servers = {
@@ -11,8 +13,6 @@ local servers = {
 }
 
 local opts = { noremap = true, silent = true }
-
-vim.g.coq_settings = { auto_start = true }
 
 -- diagnostic mapping
 -- See `:help vim.diagnostic.*` for documentation
@@ -44,7 +44,7 @@ local function on_attach(client, bufnr)
   vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, buf_opts)
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, buf_opts)
 
-  vim.keymap.set('n', '<space>rn', vim.lsp.buf.signature_help, buf_opts)
+  vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, buf_opts)
   vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, buf_opts)
   vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, buf_opts)
 
