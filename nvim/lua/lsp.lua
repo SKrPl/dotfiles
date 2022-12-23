@@ -1,4 +1,5 @@
 local nvim_lsp = require('lspconfig')
+local null_ls = require('null-ls')
 
 vim.g.coq_settings = { auto_start = true } -- to be called before importing coq
 local coq = require('coq')
@@ -55,11 +56,7 @@ local function on_attach(client, bufnr)
 end
 
 -- Diagnostic configuration
-vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(
-  vim.lsp.diagnostic.on_publish_diagnostics, {
-    virtual_text = false -- disable virtual text
-  }
-)
+vim.diagnostic.config({ virtual_text = false })
 
 -- TODO: Use a different configuration for specifc language servers
 local default_config = {
@@ -73,6 +70,21 @@ local default_config = {
   }
 }
 
+-- setup server for languages
 for _, lsp in pairs(servers) do
   nvim_lsp[lsp].setup(coq.lsp_ensure_capabilities(default_config))
 end
+
+
+-- diagnostics & code actions in LSP
+null_ls.setup({
+  sources = {
+    -- javascript
+    null_ls.builtins.diagnostics.eslint,
+
+    -- python
+    null_ls.builtins.diagnostics.flake8,
+    null_ls.builtins.formatting.black,
+    null_ls.builtins.formatting.isort,
+  },
+})

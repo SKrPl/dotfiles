@@ -31,6 +31,9 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 " LSP configurations
 Plug 'neovim/nvim-lspconfig'
 
+" Linters, formatters, etc. as LSP diagnostics and code-actions
+Plug 'jose-elias-alvarez/null-ls.nvim'
+
 " Auto complete plugin for neovim
 Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
 " 9000+ Snippets
@@ -76,7 +79,7 @@ require('fuzzy-finder') -- telescope
 require('indentline') -- indent blankline
 require('theme')
 require('statusline') -- lua line
-require('autocomplete') -- LSP and coq_nvim
+require('lsp') -- LSP and auto complete
 require('nvim-ts') -- treesitter
 
 -- ultra fold neovim
