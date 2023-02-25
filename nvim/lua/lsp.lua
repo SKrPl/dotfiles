@@ -27,10 +27,9 @@ vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
 local function on_attach(client, bufnr)
   local buf_opts = { buffer = bufnr, noremap = true, silent = true }
 
-  -- TODO: enable in neovim 8.0
-  --[[local async_format = function()
+  local async_format = function()
     vim.lsp.buf.format { async = true }
-  end ]]
+  end
 
   local list_workspace_folders = function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
@@ -47,7 +46,7 @@ local function on_attach(client, bufnr)
 
   vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, buf_opts)
   vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, buf_opts)
-  vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, buf_opts)
+  vim.keymap.set('n', '<space>f', async_format, buf_opts)
 
   -- workspace mappings
   vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, buf_opts)
