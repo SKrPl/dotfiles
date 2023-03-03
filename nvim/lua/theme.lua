@@ -3,13 +3,11 @@ local M = {}
 
 -- enable true colors
 vim.o.termguicolors = true
-vim.o.background = 'dark'
-
--- gruvbox config
-g.gruvbox_italic = 1
-g.gruvbox_contrast_dark = 'light'
+vim.o.background = 'light'
 
 M.name = 'gruvbox'
+
+require('gruvbox').setup()
 
 -- no Lua API to set colorscheme
 vim.cmd('colorscheme ' .. M.name)
