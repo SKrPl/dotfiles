@@ -10,7 +10,7 @@ local servers = {
   'gopls',
   'tsserver',
   'vimls',
-  'sumneko_lua'
+  'lua_ls'
 }
 
 local opts = { noremap = true, silent = true }
