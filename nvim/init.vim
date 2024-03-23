@@ -31,8 +31,12 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 " LSP configurations
 Plug 'neovim/nvim-lspconfig'
 
+" LSP file operations: automatically refactors imports when file/folder names
+" are changed
+Plug 'antosha417/nvim-lsp-file-operations'
+
 " Linters, formatters, etc. as LSP diagnostics and code-actions
-Plug 'jose-elias-alvarez/null-ls.nvim'
+Plug 'nvimtools/none-ls.nvim'
 
 " Auto complete plugin for neovim
 Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
@@ -50,7 +54,7 @@ Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'easymotion/vim-easymotion'
 
 " Markdown viewer
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
 " Git wrapper for vim
 Plug 'tpope/vim-fugitive'
@@ -89,6 +93,7 @@ require('gitsigns').setup()
 
 require('filetype-configs') -- file extension specific indentation
 require('keybindings') -- custom keybindings
+require('lsp-file-operations').setup()
 
 EOF
 

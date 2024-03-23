@@ -1,7 +1,12 @@
 local nvim_lsp = require('lspconfig')
 local null_ls = require('null-ls')
 
-vim.g.coq_settings = { auto_start = true } -- to be called before importing coq
+vim.g.coq_settings = { 
+  clients = {
+    tmux = { enabled = false }
+  },
+  auto_start = true
+} -- to be called before importing coq
 local coq = require('coq')
 
 local servers = {
