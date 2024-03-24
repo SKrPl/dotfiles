@@ -64,7 +64,7 @@ Plug 'lewis6991/gitsigns.nvim'
 
 " Themes
 Plug 'ellisonleao/gruvbox.nvim' " Gruvbox
-Plug 'arcticicestudio/nord-vim' " Nord
+Plug 'shaunsingh/nord.nvim' " Nord
 
 " Light and configurable statusline and tabline
 Plug 'nvim-lualine/lualine.nvim'
@@ -97,6 +97,3 @@ require('keybindings') -- custom keybindings
 require('lsp-file-operations').setup()
 
 EOF
-
-" Format JSON
-" com! FormatJSON %!python3 -m json.tool
