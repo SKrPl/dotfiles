@@ -1,7 +1,14 @@
 local o = vim.o
 local g = vim.g
 
-g.python3_host_prog = '/home/siddhant/Applications/python-venv/neovim/bin/python3'
+local python3_host_prog = vim.fn.getenv('NEOVIM_PYTHON3_HOST_PROG')
+
+if python3_host_prog == vim.v.null then
+  print('"NEOVIM_PYTHON3_HOST_PROG" environment variable has not been set')
+else
+  g.python3_host_prog = python3_host_prog
+end
+
 
 -- enable local configurations if any
 o.exrc = true

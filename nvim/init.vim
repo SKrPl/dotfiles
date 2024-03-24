@@ -62,9 +62,9 @@ Plug 'tpope/vim-fugitive'
 " Git integrations for buffers
 Plug 'lewis6991/gitsigns.nvim'
 
-" Gruvbox theme
-Plug 'ellisonleao/gruvbox.nvim'
-Plug 'arcticicestudio/nord-vim'
+" Themes
+Plug 'ellisonleao/gruvbox.nvim' " Gruvbox
+Plug 'arcticicestudio/nord-vim' " Nord
 
 " Light and configurable statusline and tabline
 Plug 'nvim-lualine/lualine.nvim'
