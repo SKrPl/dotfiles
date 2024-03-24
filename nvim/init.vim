@@ -64,6 +64,7 @@ Plug 'lewis6991/gitsigns.nvim'
 
 " Gruvbox theme
 Plug 'ellisonleao/gruvbox.nvim'
+Plug 'arcticicestudio/nord-vim'
 
 " Light and configurable statusline and tabline
 Plug 'nvim-lualine/lualine.nvim'
