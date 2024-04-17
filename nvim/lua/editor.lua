@@ -1,14 +1,10 @@
 local o = vim.o
 local g = vim.g
 
-local python3_host_prog = vim.fn.getenv('NEOVIM_PYTHON3_HOST_PROG')
+local utils = require('utils')
 
-if python3_host_prog == vim.v.null then
-  print('"NEOVIM_PYTHON3_HOST_PROG" environment variable has not been set')
-else
-  g.python3_host_prog = python3_host_prog
-end
 
+g.python3_host_prog = utils.getenv('NEOVIM_PYTHON3_HOST_PROG')
 
 -- enable local configurations if any
 o.exrc = true

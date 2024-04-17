@@ -37,6 +37,7 @@ Plug 'antosha417/nvim-lsp-file-operations'
 
 " Linters, formatters, etc. as LSP diagnostics and code-actions
 Plug 'nvimtools/none-ls.nvim'
+Plug 'nvimtools/none-ls-extras.nvim'
 
 " Auto complete plugin for neovim
 Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
