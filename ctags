@@ -1,4 +1,0 @@
---python-kinds=-i
---recurse=yes
---exclude=.git
---exclude=node_modules/*
