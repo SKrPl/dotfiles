@@ -10,7 +10,9 @@ treesitter_config.setup({
 
     "cpp",
     "python",
-    "javascript"
+    "javascript",
+    "markdown",
+    "markdown_inline"
   },
   highlight = { enable = true },
   incremental_selection = { enable = true },
