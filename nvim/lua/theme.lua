@@ -5,7 +5,7 @@ local M = {}
 vim.o.termguicolors = true
 vim.o.background = 'dark'
 
-M.name = 'nord' -- theme name
+M.name = 'catppuccin-frappe' -- theme name
 
 -- gruvbox config
 require('gruvbox').setup()

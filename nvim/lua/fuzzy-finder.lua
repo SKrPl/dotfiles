@@ -12,5 +12,3 @@ keymap.set('n', '<leader>fb', builtin.buffers, {})
 keymap.set('n', '<leader>fh', builtin.help_tags, {})
 keymap.set('n', '<leader>fs', builtin.lsp_document_symbols, {})
 keymap.set('n', '<leader>fgb', builtin.git_branches, {})
-
-

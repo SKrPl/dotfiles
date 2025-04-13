@@ -13,7 +13,7 @@ local servers = {
   'pyright',
   'clangd',
   'gopls',
-  'tsserver',
+  'ts_ls',
   'vimls',
   'lua_ls'
 }
@@ -41,17 +41,22 @@ local function on_attach(client, bufnr)
   end
 
   -- See `:help vim.lsp.*` for documentation
+  -- default nvim-lsp actions
   vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, buf_opts)
   vim.keymap.set('n', 'gd', vim.lsp.buf.definition, buf_opts)
   vim.keymap.set('n', '<space>d', vim.lsp.buf.type_definition, buf_opts)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, buf_opts)
   vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, buf_opts)
   vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, buf_opts)
-  vim.keymap.set('n', 'K', vim.lsp.buf.hover, buf_opts)
-
-  vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, buf_opts)
-  vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, buf_opts)
   vim.keymap.set('n', '<space>f', async_format, buf_opts)
+  -- vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, buf_opts)
+  -- vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, buf_opts)
+  -- vim.keymap.set('n', 'K', vim.lsp.buf.hover, buf_opts)
+
+  -- lspsaga actions
+  vim.keymap.set('n', 'K', '<CMD>Lspsaga hover_doc<CR>', buf_opts)
+  vim.keymap.set('n', '<space>rn', '<CMD>Lspsaga rename<CR>', buf_opts)
+  vim.keymap.set('n', '<space>ca', '<CMD>Lspsaga code_action<CR>', buf_opts)
 
   -- workspace mappings
   vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, buf_opts)

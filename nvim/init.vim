@@ -15,7 +15,7 @@ call plug#begin('~/.config/nvim/bundle')
 Plug 'nvim-tree/nvim-tree.lua'
 
 " Icons
-Plug 'kyazdani42/nvim-web-devicons' 
+Plug 'kyazdani42/nvim-web-devicons'
 
 " Easy commenting
 Plug 'scrooloose/nerdcommenter'
@@ -26,10 +26,13 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
 " Neovim treesitter
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 
 " LSP configurations
 Plug 'neovim/nvim-lspconfig'
+
+" LSP saga
+Plug 'nvimdev/lspsaga.nvim'
 
 " LSP file operations: automatically refactors imports when file/folder names
 " are changed
@@ -40,9 +43,9 @@ Plug 'nvimtools/none-ls.nvim'
 Plug 'nvimtools/none-ls-extras.nvim'
 
 " Auto complete plugin for neovim
-Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
+Plug 'ms-jpq/coq_nvim', { 'branch': 'coq' }
 " 9000+ Snippets
-Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
+Plug 'ms-jpq/coq.artifacts', { 'branch': 'artifacts' }
 
 " Ultra fold neovim
 Plug 'kevinhwang91/promise-async'
@@ -55,7 +58,7 @@ Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'easymotion/vim-easymotion'
 
 " Markdown viewer
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug'] }
 
 " Git wrapper for vim
 Plug 'tpope/vim-fugitive'
@@ -66,6 +69,7 @@ Plug 'lewis6991/gitsigns.nvim'
 " Themes
 Plug 'ellisonleao/gruvbox.nvim' " Gruvbox
 Plug 'shaunsingh/nord.nvim' " Nord
+Plug 'catppuccin/nvim', { 'as': 'catppuccin' } " Catppuccin
 
 " Light and configurable statusline and tabline
 Plug 'nvim-lualine/lualine.nvim'
@@ -86,6 +90,7 @@ require('indentline') -- indent blankline
 require('theme')
 require('statusline') -- lua line
 require('lsp') -- LSP and auto complete
+require('lsp_saga')
 require('nvim-ts') -- treesitter
 
 -- ultra fold neovim

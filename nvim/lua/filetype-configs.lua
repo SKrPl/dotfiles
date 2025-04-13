@@ -62,6 +62,10 @@ local filetype_config = {
     max_chars = '80',
     expandtab = false,
   },
+  proto = {
+    indentation_style = 2,
+    max_chars = '80'
+  },
 }
 
 -- create an autocommand for each file type
