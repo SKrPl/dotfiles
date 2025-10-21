@@ -66,6 +66,10 @@ local filetype_config = {
     indentation_style = 2,
     max_chars = '80'
   },
+  kotlin = {
+    indentation_style = 4,
+    max_chars = '100'
+  }
 }
 
 -- create an autocommand for each file type

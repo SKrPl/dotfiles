@@ -1,4 +1,3 @@
-local nvim_lsp = require('lspconfig')
 local null_ls = require('null-ls')
 
 vim.g.coq_settings = { 
@@ -81,7 +80,8 @@ local default_config = {
 
 -- setup server for languages
 for _, lsp in pairs(servers) do
-  nvim_lsp[lsp].setup(coq.lsp_ensure_capabilities(default_config))
+  vim.lsp.config(lsp, coq.lsp_ensure_capabilities(default_config))
+  vim.lsp.enable(lsp)
 end
 
 
